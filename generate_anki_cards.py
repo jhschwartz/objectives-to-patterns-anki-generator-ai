@@ -667,6 +667,8 @@ def fuzzy_match(value, candidates, threshold=0.7):
     value_lower = value.lower()
 
     for candidate in candidates:
+        if not candidate:  # Skip empty candidates
+            continue
         candidate_lower = candidate.lower()
 
         # Fast path: exact substring match
@@ -714,6 +716,8 @@ def exact_match(value, candidates):
         return False
     value_lower = value.lower()
     for candidate in candidates:
+        if not candidate:  # Skip empty candidates
+            continue
         if candidate.lower() == value_lower:
             return True
     return False
