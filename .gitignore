@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Runtime/state files
+*.state.json
+*.partial
+
+# Output files
+*_output.txt
+
+# Environment
+.env
