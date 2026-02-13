@@ -76,6 +76,7 @@ python generate_anki_cards.py input.tsv output.tsv --provider claude --model cla
 | `--filter-subject SUBJECTS` | Filter by Subject (comma-separated, case-insensitive). |
 | `--filter-system SYSTEMS` | Filter by System (comma-separated, case-insensitive). |
 | `--filter-topic TOPICS` | Filter by Topic (comma-separated, case-insensitive). |
+| `--fuzzy` | Enable fuzzy matching for filters (allows abbreviations and typos). |
 
 ### Provider defaults and estimated costs
 
@@ -96,29 +97,31 @@ All cost estimates are for ~4,100 objectives at density 2.0 using batch APIs (50
 
 **Recommendation:** Start with the defaults above. If quality is acceptable but you want to save costs, try the "Budget" tier models with `--test` first.
 
+**Note:** All providers use Batch APIs with 50% discount (already reflected in pricing). Batch processing completes within 24 hours, ideal for non-urgent workloads.
+
 #### Claude
 | Model | Tier | Input $/M | Output $/M | Notes |
 |-------|------|-----------|------------|-------|
-| `claude-opus-4-6` | Premium+ | $2.50 | $12.50 | Highest quality (Feb 2026), prompt caching |
-| `claude-sonnet-4-5-20250929` | Premium | $1.50 | $7.50 | Default, prompt caching enabled |
-| `claude-haiku-4-5-20251001` | Budget | $0.50 | $2.50 | ~60% cheaper than Sonnet, prompt caching |
+| `claude-opus-4-6` | Premium+ | $2.50 | $12.50 | Batch API + prompt caching (Feb 2026) |
+| `claude-sonnet-4-5-20250929` | Premium | $1.50 | $7.50 | Default, Batch API + prompt caching |
+| `claude-haiku-4-5-20251001` | Budget | $0.50 | $2.50 | Batch API + prompt caching |
 
 #### OpenAI
 | Model | Tier | Input $/M | Output $/M | Notes |
 |-------|------|-----------|------------|-------|
-| `gpt-4.1` | Premium | $1.00 | $4.00 | Default, comparable to Sonnet |
-| `gpt-4o` | Premium | $1.25 | $5.00 | Previous-gen flagship |
-| `gpt-4.1-mini` | Budget | $0.20 | $0.80 | ~90% cheaper, good for simple tasks |
-| `gpt-4o-mini` | Budget | $0.075 | $0.30 | ~95% cheaper, good for simple tasks |
-| `gpt-4.1-nano` | Budget | $0.05 | $0.20 | Cheapest, may sacrifice quality |
+| `gpt-4.1` | Premium | $1.00 | $4.00 | Default, Batch API (50% off) |
+| `gpt-4o` | Premium | $1.25 | $5.00 | Batch API (50% off) |
+| `gpt-4.1-mini` | Budget | $0.20 | $0.80 | Batch API (50% off) |
+| `gpt-4o-mini` | Budget | $0.075 | $0.30 | Batch API (50% off) |
+| `gpt-4.1-nano` | Budget | $0.05 | $0.20 | Batch API (50% off) |
 
 #### Gemini
 | Model | Tier | Input $/M | Output $/M | Notes |
 |-------|------|-----------|------------|-------|
-| `gemini-2.5-flash` | Premium | $0.15 | $1.25 | Default, comparable to Sonnet |
-| `gemini-2.5-pro` | Premium | $0.625 | $5.00 | Highest quality Gemini model |
-| `gemini-2.5-flash-lite` | Budget | $0.05 | $0.20 | ~95% cheaper, may sacrifice quality |
-| `gemini-2.0-flash` | Budget | $0.05 | $0.20 | Previous-gen, may sacrifice quality |
+| `gemini-2.5-flash` | Premium | $0.15 | $1.25 | Default, Batch API (50% off) |
+| `gemini-2.5-pro` | Premium | $0.625 | $5.00 | Batch API (50% off) |
+| `gemini-2.5-flash-lite` | Budget | $0.05 | $0.20 | Batch API (50% off) |
+| `gemini-2.0-flash` | Budget | $0.05 | $0.20 | Batch API (50% off) |
 
 ### Density
 
@@ -148,24 +151,61 @@ python generate_anki_cards.py input.tsv output.tsv --density 3
 
 Filter which objectives to process by Subject, System, or Topic. Use comma-separated values for multiple selections (case-insensitive).
 
+By default, filtering uses **exact matching** (case-insensitive). Add the `--fuzzy` flag to enable fuzzy matching, which allows abbreviations and minor typos (e.g., "obgyn" matches "Obstetrics & Gynecology", "cardio" matches "Cardiovascular System").
+
+#### Valid filter values
+
+**Subjects** (all 5 subjects):
+- `Medicine`
+- `Obstetrics & Gynecology`
+- `Pediatrics`
+- `Psychiatry`
+- `Surgery`
+
+**Systems** (22 total; examples shown):
+- `Cardiovascular System`
+- `Pulmonary & Critical Care`
+- `Gastrointestinal & Nutrition`
+- `Female Reproductive System & Breast`
+- `Nervous System`
+- `Endocrine, Diabetes & Metabolism`
+- ...and 16 more
+
+**Topics** (1,200+ total; examples shown):
+- `Abnormal Uterine Bleeding`
+- `Acute Kidney Injury`
+- `Atrial Fibrillation`
+- `Diabetes Mellitus`
+- `Myocardial Infarction`
+- `Pneumonia`
+- ...and 1,200+ more
+
+For the complete list of all valid subjects, systems, and topics, see [FILTRATION_VALUES.md](FILTRATION_VALUES.md).
+
+#### Usage examples
+
 ```bash
-# Filter by Subject (e.g., only OB/GYN and Pediatrics)
+# Filter by exact Subject name
 python generate_anki_cards.py input.tsv output.tsv --filter-subject "Obstetrics & Gynecology,Pediatrics"
 
-# Filter by System (e.g., only Cardiovascular)
-python generate_anki_cards.py input.tsv output.tsv --filter-system "Cardiovascular"
+# Filter by exact System name
+python generate_anki_cards.py input.tsv output.tsv --filter-system "Cardiovascular System"
 
-# Filter by Topic (e.g., only Abnormal Uterine Bleeding)
-python generate_anki_cards.py input.tsv output.tsv --filter-topic "Abnormal Uterine Bleeding"
+# Use fuzzy matching for abbreviations (recommended for convenience)
+python generate_anki_cards.py input.tsv output.tsv --filter-subject "obgyn" --fuzzy
+python generate_anki_cards.py input.tsv output.tsv --filter-system "cardio" --fuzzy
+python generate_anki_cards.py input.tsv output.tsv --filter-subject "psych" --fuzzy
 
 # Combine multiple filters (all conditions must match)
 python generate_anki_cards.py input.tsv output.tsv \
   --filter-subject "Medicine" \
-  --filter-system "Pulmonary & Critical Care"
+  --filter-system "Pulmonary & Critical Care" \
+  --fuzzy
 
-# Dry run with filtering to see how many objectives match
+# Dry run with filtering to see what matches
 python generate_anki_cards.py input.tsv output.tsv --dry-run \
-  --filter-subject "Obstetrics & Gynecology"
+  --filter-subject "cardio" \
+  --fuzzy
 ```
 
 When filtering, the dry run will show you:

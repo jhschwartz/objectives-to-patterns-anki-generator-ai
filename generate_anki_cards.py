@@ -4,6 +4,7 @@
 import abc
 import argparse
 import csv
+import difflib
 import json
 import os
 import re
@@ -625,34 +626,122 @@ def cleanup_state(path):
             os.remove(p)
 
 
-def filter_rows(rows, filter_subject=None, filter_system=None, filter_topic=None):
-    """Filter rows based on Subject, System, or Topic. Returns filtered rows."""
-    if not any([filter_subject, filter_system, filter_topic]):
-        return rows
+def fuzzy_match(value, candidates, threshold=0.6):
+    """Check if value fuzzy matches any of the candidates. Case-insensitive with smart abbreviation handling."""
+    if not value:
+        return False
+    value_lower = value.lower()
 
+    for candidate in candidates:
+        candidate_lower = candidate.lower()
+
+        # Fast path: exact substring match
+        if candidate_lower in value_lower or value_lower in candidate_lower:
+            return True
+
+        # Split candidate into words for abbreviation matching
+        candidate_words = re.split(r'[,&/\s\-]+', candidate_lower)
+        candidate_words = [w for w in candidate_words if len(w) > 1]  # Filter out single chars like "&"
+
+        # Check each word individually - if any word starts with the query, that's a match
+        # This handles abbreviations like "psych" for "Psychiatry"
+        for word in candidate_words:
+            if word.startswith(value_lower) or value_lower.startswith(word[:3]):
+                return True
+
+        # Try abbreviation matching: concatenate first N letters of each word
+        # e.g., "obgyn" could match "obstetrics gynecology" as "ob" + "gyn"
+        if len(value_lower) <= 15 and len(candidate_words) >= 2:
+            # Try taking first 2-4 letters from first word, rest from second word
+            first_word = candidate_words[0]
+            for take_first in range(2, min(5, len(first_word) + 1)):
+                remaining = value_lower[take_first:]
+                if remaining and len(candidate_words) > 1:
+                    for other_word in candidate_words[1:]:
+                        if other_word.startswith(remaining):
+                            return True
+
+        # Standard fuzzy matching with difflib - use lower threshold for short queries
+        adaptive_threshold = 0.4 if len(value_lower) <= 6 else threshold
+        ratio = difflib.SequenceMatcher(None, value_lower, candidate_lower).ratio()
+        if ratio >= adaptive_threshold:
+            return True
+
+    return False
+
+
+def exact_match(value, candidates):
+    """Check if value exactly matches any of the candidates (case-insensitive)."""
+    if not value:
+        return False
+    value_lower = value.lower()
+    for candidate in candidates:
+        if candidate.lower() == value_lower:
+            return True
+    return False
+
+
+def filter_rows(rows, filter_subject=None, filter_system=None, filter_topic=None, use_fuzzy=False):
+    """Filter rows based on Subject, System, or Topic.
+
+    Args:
+        rows: List of row dictionaries
+        filter_subject: Comma-separated subject filters
+        filter_system: Comma-separated system filters
+        filter_topic: Comma-separated topic filters
+        use_fuzzy: If True, use fuzzy matching; if False, use exact matching
+
+    Returns (filtered_rows, match_info) where match_info contains what was matched.
+    """
+    if not any([filter_subject, filter_system, filter_topic]):
+        return rows, {}
+
+    match_func = fuzzy_match if use_fuzzy else exact_match
     filtered = []
+    matched_subjects = set()
+    matched_systems = set()
+    matched_topics = set()
+
     for row in rows:
         matches = True
 
         if filter_subject:
-            subjects = [s.strip().lower() for s in filter_subject.split(",")]
-            if row["subject"].lower() not in subjects:
+            subjects = [s.strip() for s in filter_subject.split(",")]
+            # Check if any of the filter terms match this row's subject
+            subject_matches = any(match_func(subject_filter, [row["subject"]]) for subject_filter in subjects)
+            if not subject_matches:
                 matches = False
+            elif row["subject"]:
+                matched_subjects.add(row["subject"])
 
         if filter_system and matches:
-            systems = [s.strip().lower() for s in filter_system.split(",")]
-            if row["system"].lower() not in systems:
+            systems = [s.strip() for s in filter_system.split(",")]
+            # Check if any of the filter terms match this row's system
+            system_matches = any(match_func(system_filter, [row["system"]]) for system_filter in systems)
+            if not system_matches:
                 matches = False
+            elif row["system"]:
+                matched_systems.add(row["system"])
 
         if filter_topic and matches:
-            topics = [t.strip().lower() for t in filter_topic.split(",")]
-            if row["topic"].lower() not in topics:
+            topics = [t.strip() for t in filter_topic.split(",")]
+            # Check if any of the filter terms match this row's topic
+            topic_matches = any(match_func(topic_filter, [row["topic"]]) for topic_filter in topics)
+            if not topic_matches:
                 matches = False
+            elif row["topic"]:
+                matched_topics.add(row["topic"])
 
         if matches:
             filtered.append(row)
 
-    return filtered
+    match_info = {
+        "subjects": sorted(matched_subjects),
+        "systems": sorted(matched_systems),
+        "topics": sorted(matched_topics)
+    }
+
+    return filtered, match_info
 
 
 def resolve_api_key(args, provider):
@@ -701,6 +790,8 @@ def main():
                         help="Filter by System (comma-separated, case-insensitive)")
     parser.add_argument("--filter-topic", default=None,
                         help="Filter by Topic (comma-separated, case-insensitive)")
+    parser.add_argument("--fuzzy", action="store_true",
+                        help="Enable fuzzy matching for filters (allows abbreviations and typos)")
     args = parser.parse_args()
 
     provider = PROVIDERS[args.provider]
@@ -717,14 +808,32 @@ def main():
 
     # Apply filters
     if any([args.filter_subject, args.filter_system, args.filter_topic]):
-        rows = filter_rows(all_rows, args.filter_subject, args.filter_system, args.filter_topic)
+        rows, match_info = filter_rows(all_rows, args.filter_subject, args.filter_system, args.filter_topic, use_fuzzy=args.fuzzy)
         print(f"After filtering: {len(rows)} objectives selected ({len(all_rows) - len(rows)} filtered out).", file=sys.stderr)
-        if args.filter_subject:
-            print(f"  Filter Subject: {args.filter_subject}", file=sys.stderr)
-        if args.filter_system:
-            print(f"  Filter System: {args.filter_system}", file=sys.stderr)
-        if args.filter_topic:
-            print(f"  Filter Topic: {args.filter_topic}", file=sys.stderr)
+
+        # Show what was matched
+        match_mode = "fuzzy" if args.fuzzy else "exact"
+
+        if args.filter_subject and match_info.get("subjects"):
+            matched = match_info["subjects"]
+            if len(matched) == 1:
+                print(f"  → '{args.filter_subject}' matched Subject ({match_mode}): {matched[0]}", file=sys.stderr)
+            else:
+                print(f"  → '{args.filter_subject}' matched {len(matched)} Subjects ({match_mode}): {', '.join(matched)}", file=sys.stderr)
+
+        if args.filter_system and match_info.get("systems"):
+            matched = match_info["systems"]
+            if len(matched) == 1:
+                print(f"  → '{args.filter_system}' matched System ({match_mode}): {matched[0]}", file=sys.stderr)
+            else:
+                print(f"  → '{args.filter_system}' matched {len(matched)} Systems ({match_mode}): {', '.join(matched)}", file=sys.stderr)
+
+        if args.filter_topic and match_info.get("topics"):
+            matched = match_info["topics"]
+            if len(matched) == 1:
+                print(f"  → '{args.filter_topic}' matched Topic ({match_mode}): {matched[0]}", file=sys.stderr)
+            else:
+                print(f"  → '{args.filter_topic}' matched {len(matched)} Topics ({match_mode}): {', '.join(matched)}", file=sys.stderr)
     else:
         rows = all_rows
 

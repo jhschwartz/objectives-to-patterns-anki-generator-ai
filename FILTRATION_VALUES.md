@@ -1,0 +1,1240 @@
+# Valid Filtration Values
+
+This file lists all valid values for the `--filter-subject`, `--filter-system`, and `--filter-topic` options.
+
+**Filtering modes:**
+- **Exact matching (default)**: Filters must match exactly (case-insensitive)
+- **Fuzzy matching (`--fuzzy` flag)**: Allows abbreviations and typos (e.g., "obgyn" matches "Obstetrics & Gynecology")
+
+## Subjects
+
+All valid subjects (5 total):
+
+- `Medicine`
+- `Obstetrics & Gynecology`
+- `Pediatrics`
+- `Psychiatry`
+- `Surgery`
+
+## Systems
+
+All valid systems (22 total):
+
+- `Allergy & Immunology`
+- `Biostatistics & Epidemiology`
+- `Cardiovascular System`
+- `Dermatology`
+- `Ear, Nose & Throat (ENT)`
+- `Endocrine, Diabetes & Metabolism`
+- `Female Reproductive System & Breast`
+- `Gastrointestinal & Nutrition`
+- `General Principles`
+- `Hematology & Oncology`
+- `Infectious Diseases`
+- `Male Reproductive System`
+- `Miscellaneous (Multisystem)`
+- `Nervous System`
+- `Ophthalmology`
+- `Poisoning & Environmental Exposure`
+- `Pregnancy, Childbirth & Puerperium`
+- `Psychiatric/Behavioral & Substance Abuse`
+- `Pulmonary & Critical Care`
+- `Renal, Urinary Systems & Electrolytes`
+- `Rheumatology/Orthopedics & Sports`
+- `Social Sciences (Ethics/Legal/Professional)`
+
+> **Note:** Add `--fuzzy` flag to enable fuzzy matching, which allows minor typos and abbreviations (e.g., "Cardiovascular" matches "Cardiovascular System", "Allergy" matches "Allergy & Immunology", "obgyn" matches "Obstetrics & Gynecology").
+
+## Topics
+
+All valid topics (1,200+ total):
+
+<details>
+<summary>Click to expand full list</summary>
+
+- `ABO Incompatibility`
+- `ACE Inhibitors`
+- `ANOVA`
+- `ARDS`
+- `AV Fistula`
+- `AV Malformation`
+- `Abnormal LFTs`
+- `Abnormal Uterine Bleeding`
+- `Abortion`
+- `Acanthosis Nigricans`
+- `Accidental Hypothermia`
+- `Accuracy And Precision`
+- `Acetaminophen Poisoning`
+- `Achalasia`
+- `Achilles Tendinopathy`
+- `Acne Vulgaris`
+- `Acromegaly`
+- `Acromioclavicular Injuries`
+- `Actinic Keratoses`
+- `Actinomycosis`
+- `Acute Abdomen`
+- `Acute Bronchitis`
+- `Acute Cerebellar Ataxia`
+- `Acute Diarrhea`
+- `Acute Fatty Liver Of Pregnancy`
+- `Acute Heart Failure`
+- `Acute Intermittent Porphyria`
+- `Acute Interstitial Nephritis`
+- `Acute Intracerebral Hemorrhage`
+- `Acute Kidney Injury`
+- `Acute Limb Ischemia`
+- `Acute Liver Failure`
+- `Acute Lymphoblastic Leukemia`
+- `Acute Myeloid Leukemia`
+- `Acute Pain`
+- `Acute Pancreatitis`
+- `Acute Parotitis`
+- `Acute Pericarditis`
+- `Acute Promyelocytic Leukemia`
+- `Acute Respiratory Failure`
+- `Adhesive Capsulitis`
+- `Adjustment Disorders`
+- `Adrenal Insufficiency`
+- `Advance Directive/Surrogate Decision Maker`
+- `Adverse Drug Reaction`
+- `Adverse Event`
+- `Against Medical Advice Discharge`
+- `Aggression`
+- `Aging`
+- `Air Embolism`
+- `Airway Emergency`
+- `Akathisia`
+- `Alcohol Use Disorder`
+- `Alcohol Withdrawal`
+- `Alcoholic Liver Disease`
+- `Alport Syndrome`
+- `Alzheimer Disease`
+- `Amaurosis Fugax`
+- `Amblyopia`
+- `Amebiasis`
+- `Amenorrhea`
+- `Aminoglycoside`
+- `Amniotic Fluid Embolism`
+- `Amputation`
+- `Amyloidosis`
+- `Amyotrophic Lateral Sclerosis`
+- `Anal Fissure`
+- `Anaphylaxis`
+- `Androgen Insensitivity Syndromes`
+- `Androgenic Steroids`
+- `Anemia Of Inflammation`
+- `Anesthesia`
+- `Angioedema`
+- `Animal And Human Bite Injuries`
+- `Ankle Trauma`
+- `Ankylosing Spondylitis`
+- `Anorexia Nervosa`
+- `Anovulation`
+- `Anoxic Brain Injury`
+- `Antepartum Bleeding`
+- `Antepartum Fetal Testing`
+- `Anterior Cord Syndrome`
+- `Anti-GBM Disease`
+- `Anticholinergics`
+- `Anticoagulants`
+- `Antidepressants`
+- `Antiepileptics`
+- `Antiphospholipid Syndrome`
+- `Antipsychotics`
+- `Anxiety`
+- `Anxiety Due To Another Medical Condition`
+- `Aortic Aneurysm`
+- `Aortic Coarctation`
+- `Aortic Dissection`
+- `Aortic Regurgitation`
+- `Aortic Stenosis`
+- `Aplastic Anemia`
+- `Appendicitis`
+- `Arsenic Poisoning`
+- `Asbestos`
+- `Ascariasis`
+- `Ascites`
+- `Aspergillosis`
+- `Aspiration Pneumonia`
+- `Assisted Suicide And Euthanasia`
+- `Asthma`
+- `Asymptomatic Bacteriuria`
+- `Ataxia-Telangiectasia`
+- `Atelectasis`
+- `Atheroembolism`
+- `Atopic Dermatitis`
+- `Atrial Fibrillation`
+- `Atrial Flutter`
+- `Atrial Myxoma`
+- `Atrial Premature Beats`
+- `Atrophic Gastritis`
+- `Attention Deficit Hyperactivity Disorder`
+- `Autism Spectrum Disorders`
+- `Autoimmune Hepatitis`
+- `Babesiosis`
+- `Back Pain`
+- `Baker Cyst`
+- `Bariatric Surgery`
+- `Bartholin Duct Cyst And Abscess`
+- `Bartonella`
+- `Behçet Disease`
+- `Bell Palsy`
+- `Benign Paroxysmal Positional Vertigo`
+- `Benign Prostatic Hyperplasia`
+- `Benzodiazepines`
+- `Bias`
+- `Biliary Atresia`
+- `Biliary Cyst`
+- `Bipolar Disorder`
+- `Bladder Cancer`
+- `Bladder Trauma`
+- `Blastomycosis`
+- `Blepharitis`
+- `Blood Transfusion`
+- `Blunt Abdominal Trauma`
+- `Blunt Thoracic Trauma`
+- `Body Dysmorphic Disorder`
+- `Bone Metastasis`
+- `Bone Tumor`
+- `Botulism`
+- `Bowel Obstruction`
+- `Brachial Plexus`
+- `Bradycardia`
+- `Brain Abscess`
+- `Brain Death`
+- `Brain Herniation`
+- `Brain Tumors`
+- `Branchial Cleft Cysts`
+- `Breast Cancer`
+- `Breast Engorgement`
+- `Breast Infection`
+- `Breast Mass`
+- `Breastfeeding`
+- `Breath Holding Spells`
+- `Brief Psychotic Disorder`
+- `Bronchiectasis`
+- `Bronchiolitis`
+- `Bronchogenic Cyst`
+- `Bronchopulmonary Dysplasia`
+- `Brown-Séquard Hemicord Syndrome`
+- `Bulimia Nervosa`
+- `Bullous Pemphigoid`
+- `Bursitis`
+- `CABG`
+- `CNS Lymphoma`
+- `COPD`
+- `Calcaneal Apophysitis`
+- `Calcineurin Inhibitors`
+- `Calcium Channel Blocker`
+- `Cancer Anorexia Cachexia Syndrome`
+- `Cannabis`
+- `Car Safety Seat`
+- `Carbon Monoxide Poisoning`
+- `Carcinoid Tumors`
+- `Cardiac Arrest`
+- `Cardiac Tamponade`
+- `Cardiogenic Shock`
+- `Carotid Artery Stenosis`
+- `Carpal Tunnel Syndrome`
+- `Case Control Studies`
+- `Cataract`
+- `Catatonia`
+- `Catheter Related Bloodstream Infection`
+- `Cauda Equina Syndrome`
+- `Causality`
+- `Caustic Ingestion`
+- `Cavernous Sinus Thrombosis`
+- `Celiac Disease`
+- `Central Cord Syndrome`
+- `Central Pontine Myelinolysis`
+- `Central Retinal Vein Occlusion`
+- `Central Tendency (Mean, Median, Mode, Outliers)`
+- `Central Venous Catheter`
+- `Cerebellar Degeneration`
+- `Cerebral Palsy`
+- `Cerebral Venous Thrombosis`
+- `Cerebrospinal Fluid Rhinorrhea`
+- `Cervical Artery Dissection`
+- `Cervical Cancer`
+- `Cervical Myelopathy`
+- `Cervical Spondylosis`
+- `Cesarean Delivery`
+- `Chagas Disease`
+- `Chancroid`
+- `Charcot Joint`
+- `Chemotherapy`
+- `Cherry Angioma`
+- `Chiari Malformation`
+- `Chicken Pox`
+- `Chikungunya Fever`
+- `Child Abuse`
+- `Child And Adolescent Mental Health`
+- `Choanal Atresia`
+- `Cholangiocarcinoma`
+- `Cholangitis`
+- `Cholecystitis`
+- `Cholesteatoma`
+- `Chorea`
+- `Chorioamnionitis`
+- `Chronic Cough`
+- `Chronic Diarrhea`
+- `Chronic Granulomatous Disease`
+- `Chronic Heart Failure`
+- `Chronic Inflammatory Demyelinating Polyneuropathy`
+- `Chronic Kidney Disease`
+- `Chronic Lymphocytic Leukemia`
+- `Chronic Myeloid Leukemia`
+- `Chronic Otitis Media`
+- `Chronic Pain`
+- `Chronic Pancreatitis`
+- `Chronic Venous Insufficiency`
+- `Cirrhosis`
+- `Clavicle Fracture`
+- `Clinical Trials`
+- `Clostridium Difficile Infection`
+- `Clostridium Septicum Infection`
+- `Clozapine`
+- `Clubfoot`
+- `Cluster Headache`
+- `Cocaine`
+- `Coccidioidomycosis`
+- `Cognitive Error`
+- `Colic`
+- `Colles Fracture`
+- `Colonic Ischemia`
+- `Colorectal Cancer Screening`
+- `Colorectal Polyps And Cancer`
+- `Common Variable Immunodeficiency`
+- `Community Acquired Pneumonia`
+- `Compartment Syndrome`
+- `Complementary And Alternative Medicine`
+- `Complex Regional Pain Syndrome`
+- `Concussion`
+- `Conduct Disorder`
+- `Confounding, Effect Modification, Bias, Errors`
+- `Congenital Adrenal Hyperplasia`
+- `Congenital Cardiac Defects`
+- `Conjunctivitis`
+- `Constipation`
+- `Constrictive Pericarditis`
+- `Contact Dermatitis`
+- `Contraception`
+- `Contrast Nephropathy`
+- `Conversion Disorder`
+- `Copper Deficiency`
+- `Cor Pulmonale`
+- `Coronary Artery Disease`
+- `Correlation Coefficient`
+- `Costochondritis`
+- `Cranial Nerve Palsy`
+- `Cryoglobulinemia`
+- `Cryptococcal Infections`
+- `Cryptorchidism`
+- `Cryptosporidiosis`
+- `Cultural Considerations`
+- `Cushing Syndrome`
+- `Cutaneous Larva Migrans`
+- `Cyanide Poisoning`
+- `Cyclic Vomiting Syndrome`
+- `Cystic Fibrosis`
+- `Cytomegalovirus`
+- `DIC`
+- `Dacryostenosis & Dacryocystitis`
+- `De Quervain Tenosynovitis`
+- `Decision Making Capacity`
+- `Decompression Sickness`
+- `Defense Mechanisms`
+- `Delirium`
+- `Delusional Disorder`
+- `Dementia With Lewy Bodies`
+- `Dental Injury`
+- `Depression`
+- `Depressive Disorder Due To Another Medical Condition`
+- `Dermal Melanocytosis`
+- `Dermatitis Herpetiformis`
+- `Dermatofibroma`
+- `Dermatoses Of Pregnancy`
+- `Developmental Hip Dysplasia`
+- `Developmental Milestones`
+- `Deviated Nasal Septum`
+- `DiGeorge Syndrome`
+- `Diabetes Insipidus`
+- `Diabetes Mellitus`
+- `Diabetic Foot`
+- `Diabetic Ketoacidosis`
+- `Diabetic Nephropathy`
+- `Diabetic Neuropathy`
+- `Diabetic Retinopathy`
+- `Diaper Dermatitis`
+- `Diaphragmatic Hernia`
+- `Diaphragmatic Paralysis`
+- `Diffuse Esophageal Spasm`
+- `Digoxin`
+- `Dilated Cardiomyopathy`
+- `Discoid Lupus Erythematosus`
+- `Dissociative Amnesia`
+- `Dissociative Identity Disorder`
+- `Diverticular Disease`
+- `Down Syndrome`
+- `Driving`
+- `Drowning`
+- `Drug Allergy`
+- `Drug Induced Liver Injury`
+- `Drug Induced Myopathy`
+- `Duchenne Dystrophy`
+- `Dumping Syndrome`
+- `Dupuytren Contracture`
+- `Dyshidrotic Eczema`
+- `Dyslipidemia`
+- `Dysmenorrhea`
+- `Dyspareunia`
+- `Dyspepsia`
+- `Dyspnea Of Pregnancy`
+- `Dysthymia`
+- `Dystonia`
+- `ERCP`
+- `Ear Trauma`
+- `Echinococcosis`
+- `Ectopic Pregnancy`
+- `Ehlers-Danlos Syndrome`
+- `Ehrlichiosis & Anaplasmosis`
+- `Elder Abuse & Neglect`
+- `Electrical Injury`
+- `Emergent Airway Management`
+- `Encephalitis`
+- `End Of Life Care`
+- `Endocarditis`
+- `Endometrial Cancer`
+- `Endometriosis`
+- `Endophthalmitis`
+- `Enteral Nutrition`
+- `Enuresis`
+- `Epidermoid Cyst`
+- `Epidermolysis Bullosa`
+- `Epididymitis`
+- `Epidural Abscess`
+- `Epidural Hematoma`
+- `Epiglottitis`
+- `Epistaxis`
+- `Erythema Multiforme`
+- `Erythema Nodosum`
+- `Erythema Toxicum Neonatorum`
+- `Esophageal Cancer`
+- `Esophageal Rupture`
+- `Esophageal Varices`
+- `Esophagitis`
+- `Ethical Principles In Healthcare`
+- `Euthyroid Sick Syndrome`
+- `Evidence-Based Clinical Recommendations`
+- `Extragonadal Germ Cell Tumor`
+- `FSGS`
+- `Factitious Disorder`
+- `Familial Adenomatous Polyposis`
+- `Fat Embolism`
+- `Febrile Neutropenia`
+- `Febrile Seizure`
+- `Fecal Impaction`
+- `Fecal Incontinence`
+- `Femoral Neuropathy`
+- `Fetal Alcohol Syndrome`
+- `Fetal Growth Restriction`
+- `Fetal Heart Tracing`
+- `Fetal Hydrops`
+- `Fetal Malpresentation`
+- `Fibrocystic Breast Changes`
+- `Fibromyalgia`
+- `Fistula In Ano`
+- `Focal Nodular Hyperplasia`
+- `Folic Acid Deficiency`
+- `Food Allergy`
+- `Food Protein-Induced Allergic Proctocolitis`
+- `Foodborne Illness`
+- `Footdrop`
+- `Foreign Body Aspiration`
+- `Foreign Body Ingestion`
+- `Fragile X Syndrome`
+- `Friedreich Ataxia`
+- `Frontotemporal Dementia`
+- `G6PD Deficiency`
+- `Galactosemia`
+- `Gallstone Disease`
+- `Ganglion Cyst`
+- `Gastric Cancer`
+- `Gastric Outlet Obstruction`
+- `Gastroesophageal Reflux Disease`
+- `Gastrointestinal Hemorrhage`
+- `Gastroparesis`
+- `Gastroschisis`
+- `Gaucher Disease`
+- `Gender Dysphoria`
+- `General Safety Concerns`
+- `Generalized Anxiety Disorder`
+- `Genetic Inheritance`
+- `Genu Varum`
+- `Gestational Diabetes`
+- `Gestational Trophoblastic Disease`
+- `Giant Cell Arteritis`
+- `Giardia`
+- `Glaucoma`
+- `Glomerular Disorders`
+- `Glucagonoma`
+- `Glycogen Storage Disease`
+- `Gonococcal Infection`
+- `Gout`
+- `Graft Versus Host Disease`
+- `Granulomatosis With Polyangiitis`
+- `Greenstick Fracture`
+- `Grief`
+- `Groin Hernias`
+- `Group B Streptococcal Infection`
+- `Growing Pains`
+- `Guillain-Barré Syndrome`
+- `Gunshot Injury`
+- `Gynecomastia`
+- `HELLP Syndrome`
+- `HIV`
+- `HSV Infection`
+- `Hair Loss`
+- `Hairy Cell Leukemia`
+- `Head And Neck Cancers`
+- `Health Insurance`
+- `Healthcare Associated Pneumonia`
+- `Healthcare Quality`
+- `Hearing Loss`
+- `Heart Block`
+- `Heat Related Illness`
+- `Hemangioma`
+- `Hematuria`
+- `Hemobilia`
+- `Hemochromatosis`
+- `Hemolytic Anemia`
+- `Hemolytic Uremic Syndrome`
+- `Hemophilias`
+- `Hemoptysis`
+- `Hemorrhagic Stroke`
+- `Hemorrhoids`
+- `Heparin Induced Thrombocytopenia`
+- `Hepatic Adenomas`
+- `Hepatic Encephalopathy`
+- `Hepatitis A`
+- `Hepatitis B`
+- `Hepatitis C`
+- `Hepatocellular Cancer`
+- `Hepatorenal Syndrome`
+- `Hereditary Hemorrhagic Telangiectasia`
+- `Hereditary Hyperbilirubinemias`
+- `Hereditary Spherocytosis`
+- `Herpangina`
+- `Herpes Zoster`
+- `Hiatal Hernia`
+- `Hidradenitis Suppurativa`
+- `High Altitude Illness`
+- `Hip Fracture`
+- `Hirschsprung Disease`
+- `Hirsutism`
+- `Histoplasmosis`
+- `Hoarding Disorder`
+- `Hodgkin Lymphoma`
+- `Homicide And Other Violence`
+- `Homocysteine`
+- `Hordeolum`
+- `Huntington Disease`
+- `Hydrocele`
+- `Hydrocephalus`
+- `Hyper-IgM Syndrome`
+- `Hyperaldosteronism`
+- `Hypercalcemia`
+- `Hyperemesis Gravidarum`
+- `Hyperglycemic Hyperosmolar Nonketotic Syndrome`
+- `Hyperkalemia`
+- `Hypernatremia`
+- `Hyperparathyroidism`
+- `Hyperprolactinemia`
+- `Hypersensitivity Pneumonitis`
+- `Hypertensive Nephropathy`
+- `Hyperthyroidism`
+- `Hypertrophic Cardiomyopathy`
+- `Hypertrophic Osteoarthropathy`
+- `Hypertrophic Pyloric Stenosis`
+- `Hypocalcemia`
+- `Hypoglycemia`
+- `Hypokalemia`
+- `Hypomagnesemia`
+- `Hyponatremia`
+- `Hypoparathyroidism`
+- `Hypophosphatemia`
+- `Hypopituitarism`
+- `Hypospadia And Epispadia`
+- `Hypospadia and Epispadia`
+- `Hypothesis Testing`
+- `Hypothyroidism`
+- `Hypovolemia`
+- `Hypovolemic Shock`
+- `ITP`
+- `IUFD`
+- `Ichthyoses`
+- `Idiopathic Intracranial Hypertension`
+- `IgA Nephropathy`
+- `IgA Vasculitis`
+- `Iliotibial Band Syndrome`
+- `Illness Anxiety Disorder`
+- `Immotile Cilia Syndrome`
+- `Immunizations`
+- `Imperforate Hymen`
+- `Impulse Control Disorders`
+- `Incisional Hernia`
+- `Incompetent Cervix`
+- `Increased Intracranial Pressure`
+- `Infant Of Diabetic Mother`
+- `Infectious Keratitis`
+- `Infectious Mononucleosis`
+- `Infertility`
+- `Inflammatory Bowel Disease`
+- `Influenza`
+- `Informed Consent`
+- `Inhalants`
+- `Inherited Thrombophilia`
+- `Insect Bites And Stings`
+- `Insomnia`
+- `Interpretation And Use Of Evidence-Based Data (Including Individualization, Risk-Benefit Analysis, Synthesis Of Concepts With Real Data)`
+- `Interpreters`
+- `Interstitial Cystitis`
+- `Interstitial Lung Disease`
+- `Intestinal Atresia`
+- `Intestinal Helminth Parasites`
+- `Intimate Partner Violence`
+- `Intra-Abdominal Abscess`
+- `Intraductal Papilloma`
+- `Intraosseous Vascular Access`
+- `Intraventricular Hemorrhage`
+- `Intussusception`
+- `Iron Deficiency Anemia`
+- `Iron Poisoning`
+- `Irritable Bowel Syndrome`
+- `Ischemic Hepatitis`
+- `Ischemic Stroke`
+- `Jaundice`
+- `Juvenile Idiopathic Arthritis`
+- `Kaposi Sarcoma`
+- `Kawasaki Disease`
+- `Keratoacanthoma`
+- `Keratosis Pilaris`
+- `Kidney Transplantation`
+- `Klinefelter Syndrome`
+- `Knee Dislocation`
+- `Knee Trauma`
+- `Labial Adhesion`
+- `Labor Management`
+- `Lactose Intolerance`
+- `Lambert-Eaton Myasthenic Syndrome`
+- `Language Disorder`
+- `Large For Gestational Age`
+- `Laryngomalacia`
+- `Laryngotracheobronchitis`
+- `Lateral Epicondylitis`
+- `Laxative Abuse`
+- `Lead Poisoning`
+- `Learning Disorders`
+- `Legg-Calve-Perthes Disease`
+- `Legionella`
+- `Leprosy`
+- `Lesch-Nyhan Syndrome`
+- `Leukemoid Reaction`
+- `Leukocyte Adhesion Deficiency`
+- `Leukocytosis`
+- `Leukoplakia`
+- `Lichen Planus`
+- `Life Expectancy And Survival Statistics`
+- `Listeria`
+- `Lithium`
+- `Liver Abscess`
+- `Long QT Syndrome`
+- `Lower Extremity Long Bone Fracture`
+- `Ludwig Angina`
+- `Lung Abscess`
+- `Lung Cancer`
+- `Lung Nodule`
+- `Lung Transplantation`
+- `Lyme Disease`
+- `Lymphadenopathy`
+- `Lymphangitis`
+- `Lymphedema`
+- `Lynch Syndrome`
+- `MALT Lymphoma`
+- `MPGN`
+- `Macular Degeneration`
+- `Malaria`
+- `Male Circumcision`
+- `Male Sexual Dysfunction`
+- `Malignant Hyperthermia`
+- `Malingering`
+- `Mallory-Weiss Syndrome`
+- `Marfan Syndrome`
+- `Mastoiditis`
+- `Maternal Substance Abuse`
+- `Measles`
+- `Measures Of Association`
+- `Mechanical Valve`
+- `Mechanical Ventilation`
+- `Meckel Diverticulum`
+- `Median Nerve Injury`
+- `Mediastinal Masses`
+- `Mediastinitis`
+- `Medical Futility`
+- `Medication Overuse Headache`
+- `Melanocytic Nevus`
+- `Melanoma`
+- `Membranous Nephropathy`
+- `Meningitis`
+- `Meningococci`
+- `Menopausal Hormone Therapy`
+- `Menopause`
+- `Menstrual Cycles`
+- `Meralgia Paraesthetica`
+- `Meralgia Paresthetica`
+- `Mesenteric Ischemia`
+- `Metabolic Acidosis`
+- `Metabolic Alkalosis`
+- `Metabolic Syndrome`
+- `Metastatic Liver Disease`
+- `Methemoglobinemia`
+- `Microcephaly`
+- `Microscopic Colitis`
+- `Migraine`
+- `Mild Cognitive Impairment`
+- `Miliaria`
+- `Milk Alkali Syndrome`
+- `Minimal Change Glomerulopathy`
+- `Mitral Regurgitation`
+- `Mitral Stenosis`
+- `Mitral Valve Prolapse`
+- `Mixed Connective Tissue Disease`
+- `Molluscum Contagiosum`
+- `Monoamine Oxidase Inhibitors`
+- `Morton Neuroma`
+- `Motivational Interviewing`
+- `Mucocutaneous Candidiasis`
+- `Mucormycosis`
+- `Multifocal Atrial Tachycardia`
+- `Multiple Endocrine Neoplasia`
+- `Multiple Gestation`
+- `Multiple Myeloma`
+- `Multiple Sclerosis`
+- `Multiple System Atrophy`
+- `Mumps`
+- `Myasthenia Gravis`
+- `Mycoplasma`
+- `Myocardial Infarction`
+- `Myocarditis`
+- `Myositis Ossificans`
+- `Myotonic Dystrophy`
+- `Ménière Disease`
+- `Narcolepsy`
+- `Nasal Polyps`
+- `Nasopharyngeal Carcinoma`
+- `Necrotizing Enterocolitis`
+- `Necrotizing Soft Tissue Infections`
+- `Neonatal Acne`
+- `Neonatal Conjunctivitis`
+- `Neonatal Evaluation`
+- `Neonatal Jaundice`
+- `Neonatal Respiratory Distress Syndrome`
+- `Neonatal Sepsis`
+- `Neonatal Weight Loss`
+- `Neural Tube Defects`
+- `Neuroblastoma`
+- `Neurocysticercosis`
+- `Neurofibromatosis`
+- `Neuroleptic Malignant Syndrome`
+- `Niacin Deficiency`
+- `Niemann-Pick`
+- `Nightmare Disorder`
+- `Nipple Discharge`
+- `Nocardiosis`
+- `Non-Hodgkin Lymphoma`
+- `Nonalcoholic Fatty Liver Disease`
+- `Nonmelanoma Skin Cancer`
+- `Nonstress Test`
+- `Normal Child Development`
+- `Normal Distribution`
+- `Normal Postpartum`
+- `Normal Pregnancy`
+- `Normal Pressure Hydrocephalus`
+- `Number Needed To Harm`
+- `Number Needed To Treat`
+- `Nummular Eczema`
+- `Obesity`
+- `Obesity Hypoventilation Syndrome`
+- `Obsessive Compulsive Disorder`
+- `Obstructive Shock`
+- `Obstructive Sleep Apnea`
+- `Occupational Lung Disease`
+- `Ocular Trauma`
+- `Odds Ratio`
+- `Ogilvie Syndrome`
+- `Oligohydramnios`
+- `Omphalocele`
+- `Onychomycosis`
+- `Opioids`
+- `Oppositional Defiant Disorder`
+- `Optic Neuritis`
+- `Orbital Cellulitis`
+- `Orbital Fracture`
+- `Organ Donation`
+- `Organophosphate Poisoning`
+- `Osgood-Schlatter Disease`
+- `Osteoarthritis`
+- `Osteogenesis Imperfecta`
+- `Osteomyelitis`
+- `Osteonecrosis`
+- `Osteoporosis`
+- `Otitis Externa`
+- `Otitis Media`
+- `Otosclerosis`
+- `Ovarian Cancer`
+- `Ovarian Cyst`
+- `Ovarian Torsion`
+- `Ovulation`
+- `P-Value And Confidence Interval`
+- `PDA`
+- `PET Scan`
+- `Paget Disease Of Bone`
+- `Pancreatic Cancer`
+- `Panic Disorder`
+- `Paralytic Ileus`
+- `Parapneumonic Effusion & Empyema`
+- `Parasomnias`
+- `Parkinson Disease`
+- `Paronychia`
+- `Paroxysmal Nocturnal Hemoglobinuria`
+- `Parvovirus`
+- `Patellar Dislocation`
+- `Patellofemoral Syndrome`
+- `Patient Autonomy`
+- `Patient Confidentiality`
+- `Patient Safety`
+- `Pelvic Inflammatory Disease`
+- `Pelvic Organ Prolapse`
+- `Pelvis Fracture`
+- `Pemphigus Vulgaris`
+- `Penetrating Abdominal Trauma`
+- `Penetrating Neck Trauma`
+- `Penetrating Thoracic Trauma`
+- `Penile Injury`
+- `Peptic Ulcer Disease`
+- `Per-Treatment Analysis`
+- `Perforated Viscus`
+- `Perianal Abscess`
+- `Pericardial Effusion`
+- `Perioperative Medical Management`
+- `Peripartum Cardiomyopathy`
+- `Peripartum Depression`
+- `Peripheral Artery Aneurysms`
+- `Peripheral Neuropathy`
+- `Peripheral Vascular Disease`
+- `Peritonsillar Abscess`
+- `Peroneal Neuropathy`
+- `Persistent Pulmonary Hypertension`
+- `Personality Disorders`
+- `Pertussis`
+- `Peutz-Jeghers Syndrome`
+- `Peyronie Disease`
+- `Pharyngitis`
+- `Phencyclidine`
+- `Phenylketonuria`
+- `Pheochromocytoma`
+- `Physical Exercise`
+- `Physician Patient Communication`
+- `Physiologic Anemia Of Infancy`
+- `Physiologic Murmur`
+- `Physiological Buffers`
+- `Pilonidal Disease`
+- `Pituitary Apoplexy`
+- `Pituitary Tumors`
+- `Pityriasis Rosea`
+- `Placenta Accreta`
+- `Plantar Fasciitis`
+- `Pleural Effusion`
+- `Pneumocystis Pneumonia`
+- `Pneumonectomy`
+- `Pneumothorax`
+- `Polyarteritis Nodosa`
+- `Polycystic Kidney Disease`
+- `Polycystic Ovary Disease`
+- `Polycythemia`
+- `Polyhydramnios`
+- `Polymyalgia Rheumatica`
+- `Polymyositis And Dermatomyositis`
+- `Porcelain Gallbladder`
+- `Porphyria Cutanea Tarda`
+- `Post Concussion Syndrome`
+- `Post-Concussion Syndrome`
+- `Post-Term Pregnancy`
+- `Post-Transplantation Lymphoproliferative Disorder`
+- `Post-Traumatic Stress Disorder`
+- `Posterior Urethral Valve`
+- `Postoperative Complication`
+- `Postoperative Fever`
+- `Postpartum Complication`
+- `Postpartum Endometritis`
+- `Postpartum Hemorrhage`
+- `Postpartum Psychosis`
+- `Poststreptococcal Glomerulonephritis`
+- `Power And Sample Size`
+- `Power And Samply Size`
+- `Prader-Willi Syndrome`
+- `Precocious Puberty`
+- `Preeclampsia`
+- `Premature Infants`
+- `Premenstrual Syndrome`
+- `Prenatal Care`
+- `Prerenal Azotemia`
+- `Presbyopia`
+- `Prescription Drug Misuse`
+- `Preseptal Cellulitis`
+- `Pressure Induced Injury`
+- `Preterm Labor`
+- `Preterm Newborn`
+- `Preterm Premature Rupture Of The Membranes`
+- `Pretest Probability And Odds`
+- `Prevalence And Incidence`
+- `Prevention Of Postoperative Pneumonia`
+- `Priapism`
+- `Primary Biliary Cholangitis`
+- `Primary Hypertension`
+- `Primary Polydipsia`
+- `Primary Sclerosing Cholangitis`
+- `Principles Of Public Health`
+- `Prion Disease`
+- `Proctalgia Fugax`
+- `Proctitis`
+- `Professional Conduct`
+- `Progressive Multifocal Leukoencephalopathy`
+- `Prostate Cancer`
+- `Prostatitis`
+- `Proteinuria`
+- `Pseudocyesis`
+- `Pseudofolliculitis Barbae`
+- `Pseudogout`
+- `Pseudomonas`
+- `Psoas Abscess`
+- `Psoriasis`
+- `Psychosis`
+- `Psychotic Disorder Due To Another Medical Condition`
+- `Puberty`
+- `Pulmonary Arterial Hypertension`
+- `Pulmonary Contusion`
+- `Pulmonary Embolism`
+- `Pulmonary Stenosis`
+- `Pulsus Paradoxus`
+- `Pyoderma Gangrenosum`
+- `Pyogenic Granuloma`
+- `Quadriceps Muscle And Tendon Injuries`
+- `REM Sleep Behavior Disorder`
+- `Rabies`
+- `Radial Head Subluxation`
+- `Radiculopathy`
+- `Radioactive Iodine`
+- `Randomized Control Trials`
+- `Raynaud Phenomenon`
+- `Reactive Arthritis`
+- `Reactive Attachment Disorder`
+- `Receiver Operating Characteristic`
+- `Rectal Prolapse`
+- `Rectovaginal Fistula`
+- `Rectus Abdominis Diastasis`
+- `Rectus Sheath Hematoma`
+- `Recurrent Respiratory Papillomatosis`
+- `Refeeding Syndrome`
+- `Refractive Errors`
+- `Refusal Of Treatment`
+- `Renal Artery Stenosis`
+- `Renal Calculi`
+- `Renal Cell Carcinoma`
+- `Renal Cysts`
+- `Renal Infarction`
+- `Renal Trauma`
+- `Renal Tubular Acidosis`
+- `Renal Vein Thrombosis`
+- `Respiratory Acidosis`
+- `Respiratory Alkalosis`
+- `Respiratory Distress Syndrome`
+- `Respiratory Physiology`
+- `Respiratory Syncytial Virus`
+- `Restless Legs Syndrome`
+- `Retinal Artery Occlusion`
+- `Retinal Detachment`
+- `Retinitis Pigmentosa`
+- `Retinoblastoma`
+- `Retroperitoneal Hematoma`
+- `Retropharyngeal Abscess`
+- `Rett Syndrome`
+- `Reye Syndrome`
+- `Rhabdomyolysis`
+- `Rhesus Alloimmunization`
+- `Rheumatic Fever`
+- `Rheumatoid Arthritis`
+- `Rhinitis`
+- `Rib Fracture`
+- `Riboflavin Deficiency`
+- `Rickets`
+- `Risk`
+- `Risk, Rate, Prevalence And Incidence`
+- `Rocky Mountain Spotted Fever`
+- `Rosacea`
+- `Rotator Cuff`
+- `Rubella`
+- `SIADH`
+- `SIDS`
+- `SLE`
+- `Salicylate Poisoning`
+- `Salivary Gland Tumors`
+- `Salter-Harris Fracture`
+- `Sarcoidosis`
+- `Scabies`
+- `Scalp Hematomas`
+- `Scaphoid Fracture`
+- `Scarlet Fever`
+- `Schizoaffective Disorder`
+- `Schizophrenia`
+- `Scoliosis`
+- `Screening And Surveillance`
+- `Seborrheic Dermatitis`
+- `Seborrheic Keratosis`
+- `Secondary Hypertension`
+- `Seizures`
+- `Selective Estrogen Receptor Modulator`
+- `Selective IgA Deficiency`
+- `Selective Mutism`
+- `Selective Serotonin Reuptake Inhibitors`
+- `Senile Purpura`
+- `Sensitivity And Specificity`
+- `Sensitivity, Specificity, NPV, PPV`
+- `Separation Anxiety Disorder`
+- `Sepsis`
+- `Septic Arthritis`
+- `Septic Emboli`
+- `Serotonin Syndrome`
+- `Sertoli-Leydig Cell Tumor`
+- `Serum Sickness`
+- `Severe Combined Immunodeficiency Disease`
+- `Sexual Abuse`
+- `Sexual Assault`
+- `Sexually Transmitted Infection Screening`
+- `Short Stature`
+- `Shoulder Dystocia`
+- `Sialolithiasis`
+- `Sick Sinus Syndrome`
+- `Sickle Cell`
+- `Sideroblastic Anemia`
+- `Sinusitis`
+- `Sjögren Syndrome`
+- `Skin And Soft Tissue Infections`
+- `Slipped Capital Femoral Epiphysis`
+- `Small For Gestational Age`
+- `Small Intestinal Bacterial Overgrowth`
+- `Smoking Cessation`
+- `Snake Bite`
+- `Social Anxiety Disorder`
+- `Somatic Symptom Disorder`
+- `Specific Phobia`
+- `Spinal Cord Compression`
+- `Spinal Cord Injury`
+- `Spinal Stenosis`
+- `Spleen Rupture`
+- `Splenectomy`
+- `Splenic Abscess`
+- `Splenic Infarct`
+- `Spontaneous Bacterial Peritonitis`
+- `Sporotrichosis`
+- `Standard Deviation`
+- `Staphylococcal Scalded Skin Syndrome`
+- `Statins`
+- `Statistical Tests`
+- `Statistical Vs Clinical Significance`
+- `Steroid Acne`
+- `Stevens-Johnson Syndrome`
+- `Stimulants`
+- `Strabismus`
+- `Stress Cardiomyopathy`
+- `Stress Fractures`
+- `Stress Gastric Ulcer`
+- `Study Designs`
+- `Sturge-Weber Syndrome`
+- `Subarachnoid Hemorrhage`
+- `Subclavian Steal Syndrome`
+- `Subconjunctival Hemorrhage`
+- `Subdural Hematoma`
+- `Substance Induced Mood Disorder`
+- `Substance Use Disorders`
+- `Substance-Induced Psychotic Disorder`
+- `Suicide`
+- `Sunburn`
+- `Superior Vena Cava Syndrome`
+- `Supraventricular Tachycardia`
+- `Surgical Wound Infection`
+- `Syncope`
+- `Syphilis`
+- `Syringomyelia`
+- `Systemic Sclerosis`
+- `Takayasu Arteritis`
+- `Tardive Dyskinesia`
+- `Tarsal Tunnel Syndrome`
+- `Tay-Sachs`
+- `Temporomandibular Disorders`
+- `Tendon Injury`
+- `Tension Headache`
+- `Teratogens`
+- `Testicular Cancer`
+- `Testicular Torsion`
+- `Tetanus`
+- `Tetralogy Of Fallot`
+- `Thalassemia`
+- `Thermal Burn`
+- `Thiamine Deficiency`
+- `Thrombocytopenia`
+- `Thrombophlebitis`
+- `Thrombotic Thrombocytopenic Purpura`
+- `Thyroglossal Duct Cyst`
+- `Thyroid Cancer`
+- `Thyroid Disorder In Pregnancy`
+- `Thyroid Nodules`
+- `Tick Paralysis`
+- `Tinea`
+- `Tinea Versicolor`
+- `Torticollis`
+- `Tourette Syndrome`
+- `Toxic Alcohols`
+- `Toxic Epidermal Necrolysis`
+- `Toxic Megacolon`
+- `Toxic Syndrome`
+- `Toxoplasmosis`
+- `Tracheoesophageal Fistula`
+- `Transfusion Related Acute Lung Injury`
+- `Transient Hypogammaglobulinemia Of Infancy`
+- `Transient Ischemic Attack`
+- `Transient Synovitis`
+- `Transient Tachypnea Of Newborn`
+- `Transplant Rejection`
+- `Transverse Myelitis`
+- `Traumatic Brain Injury`
+- `Treatment Adherence`
+- `Tremor`
+- `Trichinellosis`
+- `Tricuspid Regurgitation`
+- `Tricyclic Antidepressants`
+- `Trigeminal Neuralgia`
+- `Trisomy 18`
+- `Tuberculosis`
+- `Tuberous Sclerosis`
+- `Tumor Lysis Syndrome`
+- `Turner Syndrome`
+- `Ulnar Nerve Neuropathy`
+- `Umbilical Hernia`
+- `Undiagnosed Pregnancy`
+- `Upper Airway Obstruction`
+- `Upper Extremity Long Bone Fracture`
+- `Ureter Injury`
+- `Urethral Injury`
+- `Urethritis`
+- `Urinary Incontinence`
+- `Urinary Retention`
+- `Urinary Tract Infection`
+- `Urinary Tract Obstruction`
+- `Urticaria`
+- `Uterine Fibroids`
+- `Uterine Inversion`
+- `Uterine Rupture`
+- `Uveitis`
+- `VIPoma`
+- `Vaginal Atrophy`
+- `Vaginal Cancer`
+- `Vaginal Foreign Body`
+- `Validity And Reliability`
+- `Varicocele`
+- `Vascular Dementia`
+- `Vascular Ring`
+- `Venous Thromboembolism`
+- `Ventricular Fibrillation`
+- `Ventricular Septal Defect`
+- `Ventricular Tachycardia`
+- `Vertebral Compression Fracture`
+- `Vertigo`
+- `Vesicoureteral Reflux`
+- `Vestibular Neuritis/Labyrinthitis`
+- `Vestibular Schwannoma`
+- `Vibrio Vulnificus`
+- `Vision Screening`
+- `Vitamin A Deficiency`
+- `Vitamin B12 Deficiency`
+- `Vitamin C Deficiency`
+- `Vitamin D Deficiency`
+- `Vitamin K Deficiency`
+- `Vitiligo`
+- `Volvulus`
+- `Von Hippel-Lindau Disease`
+- `Von Willebrand Disease`
+- `Vulvar Carcinoma`
+- `Vulvovaginitis`
+- `Waldenström Macroglobulinemia`
+- `Warts`
+- `Wernicke-Korsakoff Syndrome`
+- `Whipple Disease`
+- `Wilms Tumor`
+- `Wilson Disease`
+- `Wiskott-Aldrich Syndrome`
+- `Wolff-Parkinson-White Syndrome`
+- `Wound Dehiscence And Evisceration`
+- `Wound Healing`
+- `X-Linked Agammaglobulinemia`
+- `Zenker Diverticulum`
+- `Zika Virus`
+- `Zinc Deficiency`
+- `Zollinger-Ellison Syndrome`
+- `α1 Antitrypsin Deficiency`
+- `β Blocker Poisoning`
+- `β Blockers`
+
+</details>
+
+## Usage Examples
+
+### Exact matching (default)
+
+```bash
+# Filter by exact subject name
+python generate_anki_cards.py input.tsv output.tsv --filter-subject "Medicine"
+
+# Filter by multiple systems (comma-separated, exact names)
+python generate_anki_cards.py input.tsv output.tsv --filter-system "Cardiovascular System,Pulmonary & Critical Care"
+
+# Filter by exact topic name
+python generate_anki_cards.py input.tsv output.tsv --filter-topic "Abnormal Uterine Bleeding"
+```
+
+### Fuzzy matching (with `--fuzzy` flag)
+
+```bash
+# Use abbreviations for subjects
+python generate_anki_cards.py input.tsv output.tsv --filter-subject "obgyn" --fuzzy
+python generate_anki_cards.py input.tsv output.tsv --filter-subject "psych" --fuzzy
+
+# Use abbreviations for systems
+python generate_anki_cards.py input.tsv output.tsv --filter-system "cardio" --fuzzy
+python generate_anki_cards.py input.tsv output.tsv --filter-system "gastro" --fuzzy
+
+# Combine filters with fuzzy matching
+python generate_anki_cards.py input.tsv output.tsv \
+  --filter-subject "obgyn" \
+  --filter-system "repro" \
+  --fuzzy
+```
+
+## Notes
+
+- Filtering is **case-insensitive** (e.g., "medicine" matches "Medicine")
+- **Exact matching (default)**: Filter values must match exactly (case-insensitive)
+- **Fuzzy matching (`--fuzzy`)**: Enables abbreviations and typos (e.g., "cardio" → "Cardiovascular System")
+- Multiple values in a single filter are **OR** conditions (e.g., Medicine OR Pediatrics)
+- Multiple filter types are **AND** conditions (e.g., Subject=Medicine AND System=Cardiovascular)
+- Use `--dry-run` to see how many objectives match your filters and what was matched before processing
