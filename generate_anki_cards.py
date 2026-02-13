@@ -832,6 +832,8 @@ def main():
                         help="Filter by System (comma-separated, case-insensitive)")
     parser.add_argument("--filter-topic", default=None,
                         help="Filter by Topic (comma-separated, case-insensitive)")
+    parser.add_argument("--filter-ids", default=None,
+                        help="Filter by question IDs (comma-separated, e.g., '123, 41, 890')")
     parser.add_argument("--fuzzy", action="store_true",
                         help="Enable fuzzy matching for filters (allows abbreviations and typos)")
     args = parser.parse_args()
@@ -878,6 +880,30 @@ def main():
                 print(f"  → '{args.filter_topic}' matched {len(matched)} Topics ({match_mode}): {', '.join(matched)}", file=sys.stderr)
     else:
         rows = all_rows
+
+    # Apply ID filter if specified
+    if args.filter_ids:
+        try:
+            # Parse comma-separated IDs
+            id_list = [int(id_str.strip()) for id_str in args.filter_ids.split(",")]
+            id_set = set(id_list)
+            original_count = len(rows)
+            matched_ids = set()
+            filtered_rows = []
+            for row in rows:
+                if row["index"] in id_set:
+                    filtered_rows.append(row)
+                    matched_ids.add(row["index"])
+            rows = filtered_rows
+            print(f"After ID filtering: {len(rows)} objectives selected ({original_count - len(rows)} filtered out).", file=sys.stderr)
+            if matched_ids:
+                print(f"  → Matched IDs: {', '.join(str(i) for i in sorted(matched_ids))}", file=sys.stderr)
+            not_found = id_set - matched_ids
+            if not_found:
+                print(f"  → IDs not found: {', '.join(str(i) for i in sorted(not_found))}", file=sys.stderr)
+        except ValueError:
+            print(f"Error: Invalid ID format in --filter-ids. Use comma-separated integers (e.g., '123, 41, 890')", file=sys.stderr)
+            sys.exit(1)
 
     if not rows:
         print("No objectives match the filters. Exiting.", file=sys.stderr)

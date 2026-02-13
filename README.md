@@ -76,6 +76,7 @@ python generate_anki_cards.py input.tsv output.tsv --provider claude --model cla
 | `--filter-subject SUBJECTS` | Filter by Subject (comma-separated, case-insensitive). |
 | `--filter-system SYSTEMS` | Filter by System (comma-separated, case-insensitive). |
 | `--filter-topic TOPICS` | Filter by Topic (comma-separated, case-insensitive). |
+| `--filter-ids IDS` | Filter by specific question IDs (comma-separated, e.g., '123, 41, 890'). |
 | `--fuzzy` | Enable fuzzy matching for filters (allows abbreviations and typos). |
 
 ### Provider defaults and estimated costs
@@ -193,6 +194,9 @@ python generate_anki_cards.py input.tsv output.tsv --filter-subject "Obstetrics 
 # Filter by exact System name
 python generate_anki_cards.py input.tsv output.tsv --filter-system "Cardiovascular System"
 
+# Filter by specific question IDs (useful for targeting specific objectives)
+python generate_anki_cards.py input.tsv output.tsv --filter-ids "123, 41, 890"
+
 # Use fuzzy matching for abbreviations (recommended for convenience)
 python generate_anki_cards.py input.tsv output.tsv --filter-subject "obgyn" --fuzzy
 python generate_anki_cards.py input.tsv output.tsv --filter-system "cardio" --fuzzy
@@ -203,6 +207,11 @@ python generate_anki_cards.py input.tsv output.tsv \
   --filter-subject "Medicine" \
   --filter-system "Pulmonary & Critical Care" \
   --fuzzy
+
+# Combine ID filter with topic filter
+python generate_anki_cards.py input.tsv output.tsv \
+  --filter-topic "Abnormal Uterine Bleeding" \
+  --filter-ids "42, 91, 156"
 
 # Dry run with filtering to see what matches
 python generate_anki_cards.py input.tsv output.tsv --dry-run \
