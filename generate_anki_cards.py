@@ -537,6 +537,7 @@ def build_tag(row):
 def parse_card_lines(text, tag, custom_id):
     """Parse TSV card lines from model output. Returns list of (front, back, tag)."""
     cards = []
+    skipped = []
     for line in text.strip().splitlines():
         line = line.strip()
         if not line:
@@ -547,7 +548,14 @@ def parse_card_lines(text, tag, custom_id):
             if front and back:
                 cards.append((front, back, tag))
         else:
-            print(f"  Skipping malformed line from {custom_id}: {line[:80]}", file=sys.stderr)
+            skipped.append(line)
+
+    # Only warn about malformed lines if we got no valid cards (indicates a real problem)
+    if skipped and not cards:
+        print(f"  Warning: {custom_id} produced no valid cards. Skipped {len(skipped)} malformed line(s):", file=sys.stderr)
+        for line in skipped[:3]:  # Show first 3 examples
+            print(f"    {line[:100]}", file=sys.stderr)
+
     return cards
 
 
@@ -558,9 +566,14 @@ def chunk_list(lst, size):
 
 
 def normalize_front(text):
-    """Normalize card front text for dedup comparison."""
+    """Normalize card front text for dedup comparison.
+
+    Preserves comparison operators (<, >, ≤, ≥, =, ≠) since they distinguish different cards.
+    """
     text = text.lower()
-    text = re.sub(r"[^\w\s]", "", text)
+    # Remove punctuation but preserve comparison operators and digits
+    # Keep: letters, numbers, spaces, and comparison operators (< > ≤ ≥ = ≠)
+    text = re.sub(r"[^\w\s<>≤≥=≠]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
@@ -945,18 +958,6 @@ def main():
     # Resolve API key
     api_key = resolve_api_key(args, provider)
 
-    # Cost confirmation for real runs
-    usage = provider.estimate_cost(len(rows), args.density, model)
-    if usage and usage['cost'] > 0.1:
-        print(f"\n--- Cost Confirmation ---", file=sys.stderr)
-        print(f"Estimated cost: ${usage['cost']:.2f}", file=sys.stderr)
-        print(f"Objectives: {len(rows)}", file=sys.stderr)
-        print(f"Estimated tokens: ~{usage['total_tokens']:,}", file=sys.stderr)
-        response = input("Continue with this run? [y/N]: ")
-        if response.lower() not in ["y", "yes"]:
-            print("Run cancelled by user.", file=sys.stderr)
-            sys.exit(0)
-
     # Check for resume state
     saved = load_state(args.output)
     if saved:
@@ -974,6 +975,18 @@ def main():
             model = saved_model
         print(f"Resuming from saved state with {len(batch_ids)} batch(es).", file=sys.stderr)
     else:
+        # Cost confirmation for new runs only
+        usage = provider.estimate_cost(len(rows), args.density, model)
+        if usage and usage['cost'] > 0.1:
+            print(f"\n--- Cost Confirmation ---", file=sys.stderr)
+            print(f"Estimated cost: ${usage['cost']:.2f}", file=sys.stderr)
+            print(f"Objectives: {len(rows)}", file=sys.stderr)
+            print(f"Estimated tokens: ~{usage['total_tokens']:,}", file=sys.stderr)
+            response = input("Continue with this run? [y/N]: ")
+            if response.lower() not in ["y", "yes"]:
+                print("Run cancelled by user.", file=sys.stderr)
+                sys.exit(0)
+
         # Build and submit
         system_prompt = build_system_prompt(args.density)
         client = provider.create_client(api_key)
