@@ -15,8 +15,9 @@ MODEL = "claude-sonnet-4-20250514"
 MAX_TOKENS = 1024
 POLL_INTERVAL_SECONDS = 60
 DEFAULT_TEST_LIMIT = 50
+DEFAULT_DENSITY = 2.0
 
-SYSTEM_PROMPT = """You are creating Anki flashcards for medical education (Step 2 CK prep). Given a learning objective, create 1-3 pattern recognition cards in this format:
+SYSTEM_PROMPT_TEMPLATE = """You are creating Anki flashcards for medical education (Step 2 CK prep). Given a learning objective, {density_instruction} in this format:
 
 Front: [Clinical presentation] + [key findings] → [question type]?
 Back: [Answer] ([brief rationale or distinguishing feature])
@@ -42,6 +43,36 @@ Rules:
 - Return cards in TSV format: Front[TAB]Back with one card per line
 - Do NOT include the header row "Front\tBack" in your response
 - If the objective doesn't lend itself to a good clinical pattern card, return an empty response"""
+
+
+def get_density_instruction(density):
+    """Return the prompt instruction fragment for the given card density.
+
+    Treats density as a continuous value:
+      <0.5  — very selective, skip low-yield objectives entirely
+      0.5-1 — aim for ~1 card, skip some low-yield objectives
+      1     — exactly 1 card per objective
+      1-2   — 1-2 cards
+      2+    — up to N cards, broader coverage
+    """
+    if density < 1.0:
+        # Sub-1: tell Claude to be selective and sometimes return nothing
+        pct = int(density * 100)
+        return (
+            f"create at most 1 card. Target roughly {pct}% of objectives — "
+            "skip objectives that are low-yield for Step 2 CK by returning an empty response. "
+            "Only keep the most important clinical decision-making patterns"
+        )
+    elif density == 1.0:
+        return "create exactly 1 concise pattern recognition card"
+    else:
+        n = int(round(density))
+        return f"create up to {n} pattern recognition cards, covering distinct testable angles"
+
+
+def build_system_prompt(density):
+    """Build the system prompt with the appropriate density instruction."""
+    return SYSTEM_PROMPT_TEMPLATE.format(density_instruction=get_density_instruction(density))
 
 
 def read_objectives(path):
@@ -85,8 +116,9 @@ def build_tag(row):
     return "::".join(parts) if parts else ""
 
 
-def build_batch_requests(rows):
+def build_batch_requests(rows, density=DEFAULT_DENSITY):
     """Build list of batch request dicts for the Batches API."""
+    system_prompt = build_system_prompt(density)
     requests = []
     for row in rows:
         requests.append({
@@ -97,7 +129,7 @@ def build_batch_requests(rows):
                 "system": [
                     {
                         "type": "text",
-                        "text": SYSTEM_PROMPT,
+                        "text": system_prompt,
                         "cache_control": {"type": "ephemeral"},
                     }
                 ],
@@ -279,30 +311,37 @@ def cleanup_state(path):
             os.remove(p)
 
 
-def estimate_cost(num_objectives):
-    """Estimate API cost for batch processing."""
+def estimate_usage(num_objectives, density=DEFAULT_DENSITY):
+    """Estimate token usage and API cost for batch processing.
+
+    Returns dict with token counts and dollar cost.
+    """
     # System prompt: ~500 tokens (cached after first request in batch)
-    # Each objective: ~100 input tokens + ~200 output tokens
-    # Batch API pricing (Sonnet): $3/M input, $15/M output, 50% discount for batches
-    # Cached input: $0.30/M (90% discount on input)
+    # Each objective: ~100 input tokens + ~200 output tokens (scales with density)
     system_tokens = 500
     input_per_request = 100
-    output_per_request = 200
+    output_per_request = int(200 * max(density, 0.5) / DEFAULT_DENSITY)
 
     # First request pays full input for system prompt, rest use cache
     full_input_tokens = system_tokens + input_per_request
     cached_input_tokens = input_per_request  # system prompt cached
+    total_input_tokens = full_input_tokens + (num_objectives - 1) * (cached_input_tokens + system_tokens)
     total_output_tokens = num_objectives * output_per_request
 
-    # Batch API has 50% discount
+    # Batch API pricing (Sonnet): $3/M input, $15/M output, 50% discount for batches
+    # Cached input: $0.30/M (90% discount on input)
     input_cost = (full_input_tokens * 1.5 / 1_000_000) + (
         (num_objectives - 1) * cached_input_tokens * 1.5 / 1_000_000
     )
     cached_cost = (num_objectives - 1) * system_tokens * 0.15 / 1_000_000
     output_cost = total_output_tokens * 7.5 / 1_000_000
 
-    total = input_cost + cached_cost + output_cost
-    return total
+    return {
+        "total_input_tokens": total_input_tokens,
+        "total_output_tokens": total_output_tokens,
+        "total_tokens": total_input_tokens + total_output_tokens,
+        "cost": input_cost + cached_cost + output_cost,
+    }
 
 
 def main():
@@ -312,6 +351,15 @@ def main():
     parser.add_argument("--test", action="store_true", help=f"Process only the first {DEFAULT_TEST_LIMIT} objectives")
     parser.add_argument("--dry-run", action="store_true", help="Show stats and estimated cost without calling API")
     parser.add_argument("--batch-size", type=int, default=None, help="Override batch size (default: all in one batch)")
+    parser.add_argument(
+        "--density", type=float, default=DEFAULT_DENSITY,
+        help=(
+            f"Cards per objective (default: {DEFAULT_DENSITY}). "
+            "Use 0.5 to only keep the highest-yield patterns, "
+            "1 for exactly one card per objective, "
+            "2-3 for broader coverage."
+        ),
+    )
     args = parser.parse_args()
 
     # Read input
@@ -329,13 +377,16 @@ def main():
 
     # Dry run
     if args.dry_run:
-        cost = estimate_cost(len(rows))
+        usage = estimate_usage(len(rows), density=args.density)
         batches = 1 if not args.batch_size else -(-len(rows) // args.batch_size)  # ceil division
+        avg = max(args.density, 0.5)
         print(f"\n--- Dry Run Summary ---", file=sys.stderr)
         print(f"Objectives to process: {len(rows)}", file=sys.stderr)
         print(f"Batches: {batches}", file=sys.stderr)
-        print(f"Estimated cards: {len(rows) * 2} (avg ~2 per objective)", file=sys.stderr)
-        print(f"Estimated cost: ${cost:.2f}", file=sys.stderr)
+        print(f"Density: {args.density} (est. ~{avg:.1f} cards/objective)", file=sys.stderr)
+        print(f"Estimated cards: {int(len(rows) * avg)}", file=sys.stderr)
+        print(f"Estimated tokens: ~{usage['total_tokens']:,} ({usage['total_input_tokens']:,} in + {usage['total_output_tokens']:,} out)", file=sys.stderr)
+        print(f"Estimated cost (Batch API): ${usage['cost']:.2f}", file=sys.stderr)
         print(f"Model: {MODEL}", file=sys.stderr)
         return
 
@@ -348,7 +399,7 @@ def main():
     else:
         # Build and submit
         rows_by_custom_id = {f"obj_{r['index']}": r for r in rows}
-        all_requests = build_batch_requests(rows)
+        all_requests = build_batch_requests(rows, density=args.density)
         client = anthropic.Anthropic()
 
         batch_ids = submit_batches(client, all_requests, args.batch_size)
@@ -380,7 +431,7 @@ def main():
         print(f"\nRetrying {len(failed_ids)} failed items...", file=sys.stderr)
         retry_rows = [rows_by_custom_id[cid] for cid in failed_ids if cid in rows_by_custom_id]
         if retry_rows:
-            retry_requests = build_batch_requests(retry_rows)
+            retry_requests = build_batch_requests(retry_rows, density=args.density)
             retry_batch_ids = submit_batches(client, retry_requests, None)
             if retry_batch_ids:
                 poll_batches(client, retry_batch_ids)
