@@ -51,15 +51,17 @@ Rules:
 
 # Batch API pricing per million tokens (already includes 50% batch discount)
 PRICING = {
-    # Claude
-    "claude-sonnet-4-20250514": {"input": 1.50, "output": 7.50, "cached_input": 0.15},
-    # OpenAI
+    # Claude - Using latest model IDs with 2026 batch pricing
+    "claude-opus-4-6": {"input": 2.50, "output": 12.50, "cached_input": 0.25},
+    "claude-sonnet-4-5-20250929": {"input": 1.50, "output": 7.50, "cached_input": 0.15},
+    "claude-haiku-4-5-20251001": {"input": 0.50, "output": 2.50, "cached_input": 0.05},
+    # OpenAI - Confirmed 2026 batch pricing
     "gpt-4.1": {"input": 1.00, "output": 4.00},
     "gpt-4.1-mini": {"input": 0.20, "output": 0.80},
     "gpt-4.1-nano": {"input": 0.05, "output": 0.20},
     "gpt-4o": {"input": 1.25, "output": 5.00},
     "gpt-4o-mini": {"input": 0.075, "output": 0.30},
-    # Gemini
+    # Gemini - Confirmed 2026 batch pricing
     "gemini-2.5-flash": {"input": 0.15, "output": 1.25},
     "gemini-2.5-pro": {"input": 0.625, "output": 5.00},
     "gemini-2.5-flash-lite": {"input": 0.05, "output": 0.20},
@@ -131,7 +133,7 @@ class BatchProvider(abc.ABC):
 
 class ClaudeProvider(BatchProvider):
     name = "claude"
-    default_model = "claude-sonnet-4-20250514"
+    default_model = "claude-sonnet-4-5-20250929"
     env_var = "ANTHROPIC_API_KEY"
 
     def create_client(self, api_key):
@@ -623,6 +625,36 @@ def cleanup_state(path):
             os.remove(p)
 
 
+def filter_rows(rows, filter_subject=None, filter_system=None, filter_topic=None):
+    """Filter rows based on Subject, System, or Topic. Returns filtered rows."""
+    if not any([filter_subject, filter_system, filter_topic]):
+        return rows
+
+    filtered = []
+    for row in rows:
+        matches = True
+
+        if filter_subject:
+            subjects = [s.strip().lower() for s in filter_subject.split(",")]
+            if row["subject"].lower() not in subjects:
+                matches = False
+
+        if filter_system and matches:
+            systems = [s.strip().lower() for s in filter_system.split(",")]
+            if row["system"].lower() not in systems:
+                matches = False
+
+        if filter_topic and matches:
+            topics = [t.strip().lower() for t in filter_topic.split(",")]
+            if row["topic"].lower() not in topics:
+                matches = False
+
+        if matches:
+            filtered.append(row)
+
+    return filtered
+
+
 def resolve_api_key(args, provider):
     """Resolve API key: --api-key flag > env var."""
     if args.api_key:
@@ -663,6 +695,12 @@ def main():
             "2-3 for broader coverage."
         ),
     )
+    parser.add_argument("--filter-subject", default=None,
+                        help="Filter by Subject (comma-separated, case-insensitive)")
+    parser.add_argument("--filter-system", default=None,
+                        help="Filter by System (comma-separated, case-insensitive)")
+    parser.add_argument("--filter-topic", default=None,
+                        help="Filter by Topic (comma-separated, case-insensitive)")
     args = parser.parse_args()
 
     provider = PROVIDERS[args.provider]
@@ -670,11 +708,28 @@ def main():
 
     # Read input
     print(f"Reading {args.input}...", file=sys.stderr)
-    rows = read_objectives(args.input)
-    print(f"Found {len(rows)} objectives.", file=sys.stderr)
+    all_rows = read_objectives(args.input)
+    print(f"Found {len(all_rows)} objectives.", file=sys.stderr)
+
+    if not all_rows:
+        print("No objectives found. Exiting.", file=sys.stderr)
+        sys.exit(1)
+
+    # Apply filters
+    if any([args.filter_subject, args.filter_system, args.filter_topic]):
+        rows = filter_rows(all_rows, args.filter_subject, args.filter_system, args.filter_topic)
+        print(f"After filtering: {len(rows)} objectives selected ({len(all_rows) - len(rows)} filtered out).", file=sys.stderr)
+        if args.filter_subject:
+            print(f"  Filter Subject: {args.filter_subject}", file=sys.stderr)
+        if args.filter_system:
+            print(f"  Filter System: {args.filter_system}", file=sys.stderr)
+        if args.filter_topic:
+            print(f"  Filter Topic: {args.filter_topic}", file=sys.stderr)
+    else:
+        rows = all_rows
 
     if not rows:
-        print("No objectives found. Exiting.", file=sys.stderr)
+        print("No objectives match the filters. Exiting.", file=sys.stderr)
         sys.exit(1)
 
     if args.test:
@@ -689,7 +744,17 @@ def main():
         print(f"\n--- Dry Run Summary ---", file=sys.stderr)
         print(f"Provider: {args.provider}", file=sys.stderr)
         print(f"Model: {model}", file=sys.stderr)
-        print(f"Objectives to process: {len(rows)}", file=sys.stderr)
+        print(f"Total objectives in file: {len(all_rows)}", file=sys.stderr)
+        if any([args.filter_subject, args.filter_system, args.filter_topic]):
+            print(f"Objectives after filtering: {len(rows)} ({len(all_rows) - len(rows)} filtered out)", file=sys.stderr)
+            if args.filter_subject:
+                print(f"  → Subject filter: {args.filter_subject}", file=sys.stderr)
+            if args.filter_system:
+                print(f"  → System filter: {args.filter_system}", file=sys.stderr)
+            if args.filter_topic:
+                print(f"  → Topic filter: {args.filter_topic}", file=sys.stderr)
+        else:
+            print(f"Objectives to process: {len(rows)} (no filters applied)", file=sys.stderr)
         print(f"Batches: {batches}", file=sys.stderr)
         print(f"Density: {args.density} (est. ~{avg:.1f} cards/objective)", file=sys.stderr)
         print(f"Estimated cards: {int(len(rows) * avg)}", file=sys.stderr)
@@ -702,6 +767,18 @@ def main():
 
     # Resolve API key
     api_key = resolve_api_key(args, provider)
+
+    # Cost confirmation for real runs
+    usage = provider.estimate_cost(len(rows), args.density, model)
+    if usage and usage['cost'] > 0.1:
+        print(f"\n--- Cost Confirmation ---", file=sys.stderr)
+        print(f"Estimated cost: ${usage['cost']:.2f}", file=sys.stderr)
+        print(f"Objectives: {len(rows)}", file=sys.stderr)
+        print(f"Estimated tokens: ~{usage['total_tokens']:,}", file=sys.stderr)
+        response = input("Continue with this run? [y/N]: ")
+        if response.lower() not in ["y", "yes"]:
+            print("Run cancelled by user.", file=sys.stderr)
+            sys.exit(0)
 
     # Check for resume state
     saved = load_state(args.output)

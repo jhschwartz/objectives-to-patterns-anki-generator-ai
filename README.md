@@ -54,8 +54,12 @@ python generate_anki_cards.py input.tsv output.tsv --provider openai
 python generate_anki_cards.py input.tsv output.tsv --provider gemini
 
 # Budget options: use cheaper models with --model flag
+python generate_anki_cards.py input.tsv output.tsv --provider claude --model claude-haiku-4-5-20251001
 python generate_anki_cards.py input.tsv output.tsv --provider openai --model gpt-4.1-mini
 python generate_anki_cards.py input.tsv output.tsv --provider gemini --model gemini-2.5-flash-lite
+
+# Premium option: Claude Opus 4.6 for highest quality (~$15 for full dataset)
+python generate_anki_cards.py input.tsv output.tsv --provider claude --model claude-opus-4-6
 ```
 
 ### Options
@@ -69,6 +73,9 @@ python generate_anki_cards.py input.tsv output.tsv --provider gemini --model gem
 | `--test` | Only process the first 50 objectives (for testing). |
 | `--dry-run` | Show estimated card count, token usage, and cost without calling the API. |
 | `--batch-size N` | Split into multiple batches of N requests each. |
+| `--filter-subject SUBJECTS` | Filter by Subject (comma-separated, case-insensitive). |
+| `--filter-system SYSTEMS` | Filter by System (comma-separated, case-insensitive). |
+| `--filter-topic TOPICS` | Filter by Topic (comma-separated, case-insensitive). |
 
 ### Provider defaults and estimated costs
 
@@ -76,9 +83,14 @@ All cost estimates are for ~4,100 objectives at density 2.0 using batch APIs (50
 
 | Provider | Default model | Quality tier | Est. cost | Notes |
 |----------|--------------|--------------|-----------|-------|
-| `claude` | claude-sonnet-4-20250514 | Premium | ~$7.00 | Highest quality, prompt caching |
+| `claude` | claude-sonnet-4-5-20250929 | Premium | ~$7.00 | Latest Sonnet, prompt caching |
 | `openai` | gpt-4.1 | Premium | ~$3.50 | Comparable to Sonnet, 50% cheaper |
 | `gemini` | gemini-2.5-flash | Premium | ~$1.00 | Comparable to Sonnet, 85% cheaper |
+
+**Claude model comparison for full dataset:**
+- Opus 4.6 (~$15): Highest quality available
+- Sonnet 4.5 (~$7): Default, excellent quality/cost balance
+- Haiku 4.5 (~$3): Budget option, 60% cheaper than Sonnet
 
 ### Available models by provider
 
@@ -87,7 +99,9 @@ All cost estimates are for ~4,100 objectives at density 2.0 using batch APIs (50
 #### Claude
 | Model | Tier | Input $/M | Output $/M | Notes |
 |-------|------|-----------|------------|-------|
-| `claude-sonnet-4-20250514` | Premium | $1.50 | $7.50 | Default, prompt caching enabled |
+| `claude-opus-4-6` | Premium+ | $2.50 | $12.50 | Highest quality (Feb 2026), prompt caching |
+| `claude-sonnet-4-5-20250929` | Premium | $1.50 | $7.50 | Default, prompt caching enabled |
+| `claude-haiku-4-5-20251001` | Budget | $0.50 | $2.50 | ~60% cheaper than Sonnet, prompt caching |
 
 #### OpenAI
 | Model | Tier | Input $/M | Output $/M | Notes |
@@ -130,6 +144,36 @@ python generate_anki_cards.py input.tsv output.tsv --density 1
 python generate_anki_cards.py input.tsv output.tsv --density 3
 ```
 
+### Filtering objectives
+
+Filter which objectives to process by Subject, System, or Topic. Use comma-separated values for multiple selections (case-insensitive).
+
+```bash
+# Filter by Subject (e.g., only OB/GYN and Pediatrics)
+python generate_anki_cards.py input.tsv output.tsv --filter-subject "Obstetrics & Gynecology,Pediatrics"
+
+# Filter by System (e.g., only Cardiovascular)
+python generate_anki_cards.py input.tsv output.tsv --filter-system "Cardiovascular"
+
+# Filter by Topic (e.g., only Abnormal Uterine Bleeding)
+python generate_anki_cards.py input.tsv output.tsv --filter-topic "Abnormal Uterine Bleeding"
+
+# Combine multiple filters (all conditions must match)
+python generate_anki_cards.py input.tsv output.tsv \
+  --filter-subject "Medicine" \
+  --filter-system "Pulmonary & Critical Care"
+
+# Dry run with filtering to see how many objectives match
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Obstetrics & Gynecology"
+```
+
+When filtering, the dry run will show you:
+- Total objectives in the file
+- How many match your filters
+- How many were filtered out
+- Estimated cost for just the filtered objectives
+
 ### Dry run
 
 Check token usage and cost before committing to an API call:
@@ -142,11 +186,123 @@ python generate_anki_cards.py input.tsv output.tsv --dry-run --provider openai
 --- Dry Run Summary ---
 Provider: openai
 Model: gpt-4o-mini
-Objectives to process: 500
+Total objectives in file: 4100
+Objectives to process: 500 (no filters applied)
 Batches: 1
 Density: 2.0 (est. ~2.0 cards/objective)
 Estimated tokens: ~400,000 (300,000 in + 100,000 out)
 Estimated cost (Batch API): $0.05
+```
+
+### Cost confirmation
+
+For real runs (not `--dry-run`), if the estimated cost exceeds **$0.10**, the script will show a confirmation prompt before proceeding:
+
+```
+--- Cost Confirmation ---
+Estimated cost: $3.50
+Objectives: 4100
+Estimated tokens: ~2,500,000
+Continue with this run? [y/N]:
+```
+
+This prevents accidentally running expensive batches. Type `y` or `yes` to continue, or any other key to cancel.
+
+## Common workflows
+
+### Process one subject at a time
+
+```bash
+# Day 1: OB/GYN
+python generate_anki_cards.py input.tsv cards_obgyn.tsv \
+  --filter-subject "Obstetrics & Gynecology"
+
+# Day 2: Pediatrics
+python generate_anki_cards.py input.tsv cards_peds.tsv \
+  --filter-subject "Pediatrics"
+
+# Day 3: Medicine
+python generate_anki_cards.py input.tsv cards_medicine.tsv \
+  --filter-subject "Medicine"
+```
+
+### Focus on specific systems
+
+```bash
+# Just cardiovascular across all subjects
+python generate_anki_cards.py input.tsv cards_cardio.tsv \
+  --filter-system "Cardiovascular"
+
+# Just pulmonary
+python generate_anki_cards.py input.tsv cards_pulm.tsv \
+  --filter-system "Pulmonary & Critical Care"
+```
+
+### Test with small subset before full run
+
+```bash
+# Step 1: Dry run to see the scope
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Obstetrics & Gynecology"
+
+# Step 2: Test with first 50 matching objectives
+python generate_anki_cards.py input.tsv output_test.tsv --test \
+  --filter-subject "Obstetrics & Gynecology"
+
+# Step 3: If quality looks good, run the full set
+python generate_anki_cards.py input.tsv output_full.tsv \
+  --filter-subject "Obstetrics & Gynecology"
+```
+
+### Adjust density based on scope
+
+```bash
+# High-yield only (50% of objectives) for a large subject
+python generate_anki_cards.py input.tsv cards_medicine_selective.tsv \
+  --filter-subject "Medicine" \
+  --density 0.5
+
+# Comprehensive coverage (3 cards per objective) for a small topic
+python generate_anki_cards.py input.tsv cards_aub_comprehensive.tsv \
+  --filter-topic "Abnormal Uterine Bleeding" \
+  --density 3
+```
+
+### Compare providers and models
+
+```bash
+# Compare Claude models
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Medicine" \
+  --provider claude --model claude-haiku-4-5-20251001
+
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Medicine" \
+  --provider claude --model claude-sonnet-4-5-20250929
+
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Medicine" \
+  --provider claude --model claude-opus-4-6
+
+# Try different providers with same filter
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Medicine" \
+  --filter-system "Pulmonary & Critical Care" \
+  --provider openai
+
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Medicine" \
+  --filter-system "Pulmonary & Critical Care" \
+  --provider gemini
+
+# Test cheaper models across providers
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Medicine" \
+  --provider claude --model claude-haiku-4-5-20251001
+
+python generate_anki_cards.py input.tsv output.tsv --dry-run \
+  --filter-subject "Medicine" \
+  --provider openai --model gpt-4.1-mini
 ```
 
 ## Output format
