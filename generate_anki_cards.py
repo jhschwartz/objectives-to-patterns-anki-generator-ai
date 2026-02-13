@@ -626,8 +626,42 @@ def cleanup_state(path):
             os.remove(p)
 
 
-def fuzzy_match(value, candidates, threshold=0.6):
-    """Check if value fuzzy matches any of the candidates. Case-insensitive with smart abbreviation handling."""
+# Common medical abbreviations (case-insensitive)
+COMMON_ABBREVIATIONS = {
+    # Subjects
+    "obgyn": "obstetrics & gynecology",
+    "ob/gyn": "obstetrics & gynecology",
+    "ob-gyn": "obstetrics & gynecology",
+    "psych": "psychiatry",
+    "peds": "pediatrics",
+    "med": "medicine",
+    "surg": "surgery",
+    # Systems
+    "gi": "gastrointestinal & nutrition",
+    "gastro": "gastrointestinal",
+    "cardio": "cardiovascular",
+    "pulm": "pulmonary",
+    "neuro": "nervous system",
+    "ent": "ear, nose & throat",
+    "ortho": "rheumatology/orthopedics",
+    "repro": "reproductive",
+    "endo": "endocrine",
+    "heme": "hematology",
+    "onc": "oncology",
+    "id": "infectious diseases",
+    "renal": "renal, urinary",
+    "derm": "dermatology",
+    "optho": "ophthalmology",
+    "ophtho": "ophthalmology",
+}
+
+
+def fuzzy_match(value, candidates, threshold=0.7):
+    """Check if value fuzzy matches any of the candidates.
+
+    Uses common medical abbreviations and fuzzy string matching.
+    More conservative threshold (0.7) to reduce false positives.
+    """
     if not value:
         return False
     value_lower = value.lower()
@@ -639,32 +673,36 @@ def fuzzy_match(value, candidates, threshold=0.6):
         if candidate_lower in value_lower or value_lower in candidate_lower:
             return True
 
-        # Split candidate into words for abbreviation matching
+        # Check common abbreviations
+        if value_lower in COMMON_ABBREVIATIONS:
+            abbrev_expansion = COMMON_ABBREVIATIONS[value_lower]
+            if abbrev_expansion in candidate_lower:
+                return True
+
+        # Split candidate into words for word-level matching
         candidate_words = re.split(r'[,&/\s\-]+', candidate_lower)
         candidate_words = [w for w in candidate_words if len(w) > 1]  # Filter out single chars like "&"
 
-        # Check each word individually - if any word starts with the query, that's a match
-        # This handles abbreviations like "psych" for "Psychiatry"
+        # Check if query starts any significant word (handles "psych" -> "Psychiatry")
         for word in candidate_words:
-            if word.startswith(value_lower) or value_lower.startswith(word[:3]):
+            if len(word) >= 4 and word.startswith(value_lower):
                 return True
 
-        # Try abbreviation matching: concatenate first N letters of each word
+        # Try multi-word abbreviation matching for compound terms
         # e.g., "obgyn" could match "obstetrics gynecology" as "ob" + "gyn"
-        if len(value_lower) <= 15 and len(candidate_words) >= 2:
-            # Try taking first 2-4 letters from first word, rest from second word
+        # Require remaining part to be at least 2 chars to avoid false positives
+        if len(value_lower) >= 4 and len(value_lower) <= 15 and len(candidate_words) >= 2:
             first_word = candidate_words[0]
             for take_first in range(2, min(5, len(first_word) + 1)):
                 remaining = value_lower[take_first:]
-                if remaining and len(candidate_words) > 1:
+                if remaining and len(remaining) >= 2 and len(candidate_words) > 1:
                     for other_word in candidate_words[1:]:
                         if other_word.startswith(remaining):
                             return True
 
-        # Standard fuzzy matching with difflib - use lower threshold for short queries
-        adaptive_threshold = 0.4 if len(value_lower) <= 6 else threshold
+        # Standard fuzzy matching with difflib - use conservative threshold
         ratio = difflib.SequenceMatcher(None, value_lower, candidate_lower).ratio()
-        if ratio >= adaptive_threshold:
+        if ratio >= threshold:
             return True
 
     return False

@@ -153,6 +153,8 @@ Filter which objectives to process by Subject, System, or Topic. Use comma-separ
 
 By default, filtering uses **exact matching** (case-insensitive). Add the `--fuzzy` flag to enable fuzzy matching, which allows abbreviations and minor typos (e.g., "obgyn" matches "Obstetrics & Gynecology", "cardio" matches "Cardiovascular System").
 
+**Note:** Fuzzy matching uses common medical abbreviations and string similarity. While it handles most common cases well, it may occasionally produce unexpected matches. Always check the output to see what was matched (shown as `→ 'filter' matched X (fuzzy): ...`).
+
 #### Valid filter values
 
 **Subjects** (all 5 subjects):
