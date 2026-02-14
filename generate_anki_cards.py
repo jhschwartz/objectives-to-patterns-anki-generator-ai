@@ -517,8 +517,20 @@ def read_objectives(path):
             objective = row.get(obj_col, "").strip()
             if not objective:
                 continue
+
+            # Try to read QID (question ID) from various column names
+            qid = None
+            for col in ["QID", "qid", "Qid", "ID", "id"]:
+                if col in row and row[col].strip():
+                    try:
+                        qid = int(row[col].strip())
+                        break
+                    except ValueError:
+                        pass
+
             rows.append({
                 "index": i,
+                "qid": qid,
                 "objective": objective,
                 "subject": row.get("Subject", row.get("subject", "")).strip(),
                 "system": row.get("System", row.get("system", "")).strip(),
@@ -894,7 +906,7 @@ def main():
     else:
         rows = all_rows
 
-    # Apply ID filter if specified
+    # Apply ID filter if specified (filters by QID, not row index)
     if args.filter_ids:
         try:
             # Parse comma-separated IDs
@@ -904,16 +916,18 @@ def main():
             matched_ids = set()
             filtered_rows = []
             for row in rows:
-                if row["index"] in id_set:
+                # Filter by QID if available, otherwise fall back to index
+                row_id = row.get("qid") if row.get("qid") is not None else row["index"]
+                if row_id in id_set:
                     filtered_rows.append(row)
-                    matched_ids.add(row["index"])
+                    matched_ids.add(row_id)
             rows = filtered_rows
             print(f"After ID filtering: {len(rows)} objectives selected ({original_count - len(rows)} filtered out).", file=sys.stderr)
             if matched_ids:
-                print(f"  → Matched IDs: {', '.join(str(i) for i in sorted(matched_ids))}", file=sys.stderr)
+                print(f"  → Matched QIDs: {', '.join(str(i) for i in sorted(matched_ids))}", file=sys.stderr)
             not_found = id_set - matched_ids
             if not_found:
-                print(f"  → IDs not found: {', '.join(str(i) for i in sorted(not_found))}", file=sys.stderr)
+                print(f"  → QIDs not found: {', '.join(str(i) for i in sorted(not_found))}", file=sys.stderr)
         except ValueError:
             print(f"Error: Invalid ID format in --filter-ids. Use comma-separated integers (e.g., '123, 41, 890')", file=sys.stderr)
             sys.exit(1)
