@@ -224,7 +224,8 @@ class ClaudeProvider(BatchProvider):
                     for block in result.result.message.content:
                         if block.type == "text":
                             text += block.text
-                    cards.extend(parse_card_lines(text, tag, custom_id))
+                    qid = row.get("qid") if row else None
+                    cards.extend(parse_card_lines(text, tag, custom_id, qid))
                 else:
                     failed_ids.append(custom_id)
                     print(f"  {custom_id} failed: {result.result.type}", file=sys.stderr)
@@ -344,7 +345,8 @@ class OpenAIProvider(BatchProvider):
                 response = result.get("response", {})
                 if response.get("status_code") == 200:
                     text = response["body"]["choices"][0]["message"]["content"]
-                    cards.extend(parse_card_lines(text, tag, custom_id))
+                    qid = row.get("qid") if row else None
+                    cards.extend(parse_card_lines(text, tag, custom_id, qid))
                 else:
                     failed_ids.append(custom_id)
                     error = result.get("error", {})
@@ -454,7 +456,8 @@ class GeminiProvider(BatchProvider):
 
                 try:
                     text = inline_response.response.text
-                    cards.extend(parse_card_lines(text, tag, custom_id))
+                    qid = row.get("qid") if row else None
+                    cards.extend(parse_card_lines(text, tag, custom_id, qid))
                 except Exception:
                     failed_ids.append(custom_id)
                     print(f"  {custom_id} failed: could not extract text", file=sys.stderr)
@@ -546,8 +549,8 @@ def build_tag(row):
     return "::".join(parts) if parts else ""
 
 
-def parse_card_lines(text, tag, custom_id):
-    """Parse TSV card lines from model output. Returns list of (front, back, tag)."""
+def parse_card_lines(text, tag, custom_id, qid=None):
+    """Parse TSV card lines from model output. Returns list of (front, back, tag, qid)."""
     cards = []
     skipped = []
     for line in text.strip().splitlines():
@@ -558,7 +561,7 @@ def parse_card_lines(text, tag, custom_id):
         if len(parts) == 2:
             front, back = parts[0].strip(), parts[1].strip()
             if front and back:
-                cards.append((front, back, tag))
+                cards.append((front, back, tag, qid))
         else:
             skipped.append(line)
 
@@ -596,14 +599,14 @@ def deduplicate_cards(cards):
     deduped = []
     removed = 0
 
-    for front, back, tag in cards:
+    for front, back, tag, qid in cards:
         norm = normalize_front(front)
         if norm in seen:
             removed += 1
             print(f"  Duplicate removed: \"{front[:60]}\" (same as \"{seen[norm][:60]}\")", file=sys.stderr)
         else:
             seen[norm] = front
-            deduped.append((front, back, tag))
+            deduped.append((front, back, tag, qid))
 
     return deduped, removed
 
@@ -612,9 +615,9 @@ def write_output(path, cards):
     """Write cards to TSV file with header."""
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f, delimiter="\t", quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(["Front", "Back", "Tags"])
-        for front, back, tag in cards:
-            writer.writerow([front, back, tag])
+        writer.writerow(["Front", "Back", "Tags", "QID"])
+        for front, back, tag, qid in cards:
+            writer.writerow([front, back, tag, qid if qid is not None else ""])
 
 
 def save_partial(path, cards):
